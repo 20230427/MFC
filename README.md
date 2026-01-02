@@ -1,91 +1,314 @@
-这份文档将基于你提供的工程结构（一个典型的 MFC 文档/视图架构应用及其配套的 Google Test 单元测试工程）进行编写。
+# Google Test 图形绘制项目
+
+## 项目概述
+
+本项目是一个基于 MFC (Microsoft Foundation Classes) 的图形绘制应用程序，集成了完整的单元测试框架。项目采用命令模式设计，支持基本图形绘制功能，并使用 Google Test 框架进行全面的单元测试。
+
+## 项目特性
+
+- **图形绘制功能**：支持直线、矩形、椭圆等基本图形绘制
+- **颜色和线宽设置**：可自定义画笔颜色、线宽和样式
+- **命令模式设计**：支持撤销/重做功能
+- **完整单元测试**：使用 Google Test 框架进行测试覆盖
+- **模拟测试环境**：提供 MockCDC 类用于测试图形绘制逻辑
+
+## 项目结构
+
+```
+Project/
+├── MFC/                          # MFC 主项目
+│   ├── MFC.h                     # 主应用程序头文件
+│   ├── MFC.cpp                   # 主应用程序实现
+│   ├── MFCDoc.h/.cpp            # 文档类
+│   ├── MFCView.h/.cpp           # 视图类
+│   ├── MainFrm.h/.cpp           # 主框架窗口
+│   ├── CommandManager.h/.cpp     # 命令管理器
+│   ├── DrawingCommand.h/.cpp     # 绘图命令类
+│   ├── framework.h               # 框架头文件
+│   ├── pch.h/.cpp               # 预编译头
+│   ├── Resource.h                # 资源定义
+│   ├── MFC.rc                    # 资源文件
+│   └── res/                      # 资源目录
+└── Google-Test/                  # Google Test 项目
+    ├── pch.h/.cpp               # 测试预编译头
+    ├── MockCDC.h/.cpp           # 模拟 CDC 类
+    ├── BasicDrawTest.cpp         # 基础绘制测试
+    ├── ColorAndLineWidthTest.cpp # 颜色和线宽测试
+    ├── LanguageManagerTest.cpp # 语言切换测试
+    ├── UndoRedoMFCViewTest.cpp # 撤销和重做测试
+    ├── DrawShapeTest.cpp         # 图形绘制测试
+    └── CommandManagerTest.cpp    # 命令管理器测试
+```
+
+## 核心类介绍
+
+### 1. MFC 主项目类
+
+#### CMFCView
+- **功能**：主要的绘图视图类
+- **特性**：
+  - 处理鼠标输入事件
+  - 执行绘图命令
+  - 管理命令历史
+  - 支持撤销/重做操作
+
+#### CommandManager
+- **功能**：命令模式管理器
+- **特性**：
+  - 执行绘图命令
+  - 维护命令历史栈
+  - 支持撤销/重做操作
+  - 命令历史大小限制
+
+#### DrawingCommand 系列
+- **LineCommand**：直线绘制命令
+- **RectangleCommand**：矩形绘制命令
+- **EllipseCommand**：椭圆绘制命令
+
+### 2. 测试项目类
+
+#### MockCDC
+- **功能**：模拟 Windows CDC 类用于测试
+- **特性**：
+  - 记录所有绘图操作
+  - 模拟画笔和画刷状态
+  - 提供查询接口用于验证
+  - 支持清空操作
+
+## 环境要求
+
+### 开发环境
+- **Visual Studio 2022**
+- **Windows 10**
+- **C++17 标准**
+
+### 依赖项
+- **MFC (Microsoft Foundation Classes)**
+- **Google Test 框架**
+- **Windows SDK**
+
+## 编译与运行
+
+### 1. 克隆项目
+```bash
+git clone <repository-url>
+cd MFC-Drawing-Project
+```
+
+### 2. 安装 Google Test
+可以通过以下方式之一安装：
+
+#### 方法一：通过 vcpkg
+```bash
+vcpkg install gtest
+```
+
+#### 方法二：手动下载编译
+1. 从 [Google Test GitHub](https://github.com/google/googletest) 下载源码
+2. 使用 CMake 编译
+3. 将库文件复制到项目目录
+
+### 3. 配置项目
+1. 打开 Visual Studio
+2. 加载解决方案文件 `MFC.sln`
+3. 配置项目属性：
+   - 确保包含 Google Test 头文件路径
+   - 链接 Google Test 库文件
+   - 设置正确的运行时库
+
+### 4. 编译
+1. 选择编译配置（Debug/Release）
+2. 编译 MFC 主项目
+3. 编译 Google-Test 项目
+
+### 5. 运行
+- **运行主程序**：启动 MFC 项目
+- **运行测试**：启动 Google-Test 项目
+
+## 测试说明
+
+### 测试覆盖范围
+
+#### 1. BasicDrawTest.cpp
+- **测试内容**：基础绘制功能
+- **覆盖范围**：
+  - 基本图形绘制
+  - 坐标设置
+  - 绘制状态验证
+
+#### 2. ColorAndLineWidthTest.cpp
+- **测试内容**：颜色和线宽功能
+- **覆盖范围**：
+  - 画笔颜色设置
+  - 画刷颜色设置
+  - 线宽设置
+  - 画笔样式设置
+  - 综合属性测试
+
+#### 3. DrawShapeTest.cpp
+- **测试内容**：图形绘制功能
+- **覆盖范围**：
+  - 直线绘制
+  - 矩形绘制
+  - 椭圆绘制
+  - 多图形绘制
+  - 边界值测试
+
+#### 4. CommandManagerTest.cpp
+- **测试内容**：命令管理功能
+- **覆盖范围**：
+  - 命令执行
+  - 撤销操作
+  - 重做操作
+  - 命令历史管理
+  - 边界情况处理
+
+### 运行测试
+```bash
+# 在 Visual Studio 中
+1. 设置 Google-Test 为启动项目
+2. 按 F5 运行测试
+3. 查看测试输出结果
+
+# 命令行运行
+Google-Test.exe
+```
+
+### 测试结果示例
+```
+[==========] Running 45 tests from 4 test suites.
+[----------] Global test environment set-up.
+[----------] 8 tests from BasicDrawTest
+[ RUN      ] BasicDrawTest.SetPenColor
+[       OK ] BasicDrawTest.SetPenColor (0 ms)
+...
+[----------] 8 tests from BasicDrawTest (2 ms total)
+...
+[==========] 45 tests from 4 test suites ran. (15 ms total)
+[  PASSED  ] 45 tests.
+```
+
+## 使用说明
+
+### 主程序使用
+1. **启动程序**：运行 MFC.exe
+2. **绘制图形**：
+   - 使用鼠标绘制直线、矩形、椭圆
+   - 通过菜单或工具栏选择绘图工具
+   - 设置颜色和线宽属性
+3. **撤销重做**：
+   - Ctrl+Z：撤销上一步操作
+   - Ctrl+Y：重做操作
+
+### 开发扩展
+要添加新的图形类型：
+
+1. **创建命令类**：
+```cpp
+class NewShapeCommand : public DrawingCommand {
+    // 实现必要的虚函数
+};
+```
+
+2. **添加到视图类**：
+```cpp
+void CMFCView::DrawNewShape(/* parameters */) {
+    auto command = std::make_unique<NewShapeCommand>(/* args */);
+    m_commandManager.ExecuteCommand(std::move(command));
+}
+```
+
+3. **编写测试**：
+```cpp
+TEST_F(DrawShapeTest, DrawNewShape) {
+    // 测试新图形绘制功能
+}
+```
+
+## 设计模式
+
+### 1. 命令模式 (Command Pattern)
+- **优点**：支持撤销/重做、命令队列、日志记录
+- **实现**：DrawingCommand 抽象基类及其具体实现
+
+### 2. 模拟对象模式 (Mock Object Pattern)
+- **优点**：隔离测试、可控环境、快速执行
+- **实现**：MockCDC 类模拟真实的 CDC 对象
+
+### 3. MVC 模式 (Model-View-Controller)
+- **Model**：CMFCDoc 文档类
+- **View**：CMFCView 视图类
+- **Controller**：CommandManager 命令管理器
+
+## 常见问题
+
+### Q1: 编译错误 "无法找到 gtest.h"
+**解决方案**：
+1. 检查 Google Test 是否正确安装
+2. 验证项目属性中的包含目录设置
+3. 确保链接了正确的库文件
+
+### Q2: 测试运行失败
+**解决方案**：
+1. 检查预编译头设置
+2. 验证所有必要的头文件是否包含
+3. 确保 MockCDC 类正确实现
+
+### Q3: MFC 程序无法启动
+**解决方案**：
+1. 检查 MFC 库是否正确链接
+2. 验证资源文件是否存在
+3. 确保运行时库设置正确
+
+## 性能优化
+
+### 1. 绘图性能
+- 使用双缓冲技术减少闪烁
+- 优化重绘区域计算
+- 合并连续的绘图操作
+
+### 2. 内存管理
+- 限制命令历史大小
+- 使用智能指针管理内存
+- 及时释放不需要的资源
+
+### 3. 测试性能
+- 使用快速的 MockCDC 替代真实 CDC
+- 并行运行独立测试
+- 缓存测试数据
+
+## 扩展建议
+
+### 短期改进
+1. **添加更多图形类型**：多边形、曲线、文本
+2. **增强属性设置**：渐变色、透明度、阴影
+3. **改进用户界面**：工具面板、属性窗口
+
+### 长期规划
+1. **文件格式支持**：保存/加载绘图文件
+2. **图层管理**：支持多图层编辑
+3. **插件架构**：支持第三方扩展
+4. **网络协作**：多用户协同编辑
+
+### 代码规范
+- 遵循项目现有的命名约定
+- 添加适当的注释和文档
+- 确保新代码有对应的测试
+
+### 提交流程
+1. Fork 项目仓库
+2. 创建特性分支
+3. 实现功能并添加测试
+4. 提交 Pull Request
+5. 通过代码审查
+
+### 测试要求
+- 新功能必须有对应的单元测试
+- 测试覆盖率不低于 85%
+- 所有测试必须通过
+
+
 
 ---
 
-# MFC 绘图与多语言管理系统 - 项目讲解文档
-
-本解决方案采用 **C++** 编写，结合了 **MFC (Microsoft Foundation Classes)** 框架构建用户界面，并集成 **Google Test (gtest)** 框架进行自动化单元测试。
-
----
-
-## 🛠️ 核心架构
-
-项目采用典型的“双工程”模式，确保业务逻辑与测试逻辑的分离。
-
-### 1. MFC 主项目 (Core Application)
-
-基于 **MDI/SDI (文档/视图)** 架构，负责业务逻辑与界面展示。
-
-* **文档/视图架构 (`MFCDoc.h/cpp`, `MFCView.h/cpp`)**:
-* `MFCDoc`: 负责数据的存储与序列化。
-* `MFCView`: 负责图形的绘制与用户交互，支持撤销重做（Undo/Redo）逻辑的集成。
-
-
-* **绘图核心 (`DrawShape.h/cpp`)**: 封装了形状绘制的底层逻辑，支持颜色与线宽的自定义。
-* **多语言管理器 (`LanguageManager.h/cpp`)**: 负责程序的国际化，管理动态语言切换。
-* **框架与资源 (`MainFrm.h`, `Resource.h`)**: 管理主窗口外观、菜单、工具栏以及资源 ID。
-
-### 2. Google-Test 项目 (Unit Testing)
-
-负责验证核心组件的稳定性和准确性。
-
-* **Mock 对象 (`MockLanguageManager.h`)**: 使用 gMock 模拟复杂的语言管理器行为，实现解耦测试。
-* **功能测试模块**:
-* `ColorAndLineWidthTest.cpp`: 验证颜色选择与线宽设置逻辑。
-* `DrawShapeTest.cpp`: 验证形状生成、计算与边界检查逻辑。
-* `LanguageManagerTest.cpp`: 验证多语言字符串查找与加载。
-* `UndoRedoMFCViewTest.cpp`: 针对视图层的“撤销/重做”功能进行行为测试。
-
-
-
----
-
-## 📂 详细目录结构
-
-### **MFC 项目文件详解**
-
-| 文件名 | 类型 | 说明 |
-| --- | --- | --- |
-| `MFC.h/cpp` | 应用类 | 项目的入口，初始化 MFC 运行环境。 |
-| `DrawShape.h/cpp` | 业务逻辑 | 核心绘图算法，定义形状属性（颜色、粗细）。 |
-| `LanguageManager.h/cpp` | 功能模块 | 管理多语言资源加载。 |
-| `MainFrm.h/cpp` | 视图容器 | 主框架窗口，管理状态栏和工具栏。 |
-| `pch.h/cpp` | 预编译头 | 提高编译速度，包含 `afxwin.h` 等常用头文件。 |
-
-### **Google-Test 项目文件详解**
-
-| 文件名 | 说明 |
-| --- | --- |
-| `gtest-all.cc / gmock-all.cc` | 单元测试框架核心库。 |
-| `test.cpp` | 测试工程入口（包含 `main` 函数）。 |
-| `packages.config` | NuGet 插件配置，用于管理 gtest 依赖。 |
-
----
-
-## 🚀 关键流程说明
-
-### **1. 如何运行测试**
-
-1. 在 Visual Studio 中，将 `Google-Test` 设为 **启动项目**。
-2. 编译并运行 (F5)。控制台将输出所有测试用例的执行结果。
-3. 通过测试驱动开发 (TDD) 的方式，在修改 `DrawShape` 逻辑后，通过 `DrawShapeTest` 确保没有引入 Bug。
-
-### **2. 绘图与撤销重做逻辑**
-
-系统在 `MFCView` 中捕获鼠标事件，调用 `DrawShape` 进行渲染，并将操作压入撤销栈。`UndoRedoMFCViewTest.cpp` 专门模拟了这一过程，确保在高频操作下内存管理与逻辑状态的正确性。
-
----
-
-## ⚙️ 环境配置要求
-
-* **IDE**: Visual Studio 2019/2022
-* **工作负载**:
-* 使用 C++ 的桌面开发
-* 用于最新 v14x 生成工具的 C++ MFC (x86 和 x64)
-
-
-* **依赖管理**: 项目通过 NuGet 管理 `Google Test` 插件，首次编译前请确保自动还原包。
-
----
-
-**你想针对某个具体的类（例如 `LanguageManager` 或 `DrawShape`）编写更详细的函数级 API 文档吗？**
+**感谢使用本项目！如有问题请及时反馈。**
